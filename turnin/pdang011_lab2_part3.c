@@ -28,20 +28,20 @@ int main(void) {
     /* Insert your solution below */
     while (1) {
 	// Check Pins
-	if(PINA & 0x01){
+	if((PINA & 0x01) == 0x00){
 		cntavail++;	
 	}
-	if(PINA & 0x02){
+	if((PINA & 0x02) == 0x00){
 		cntavail++;
 	}
-	if(PINA & 0x04){
+	if((PINA & 0x04) == 0x00){
 		cntavail++;
 	}
-	if(PINA & 0x08){
+	if((PINA & 0x08) == 0x00){
 		cntavail++;
 	}
 	// Checks if lot is full before writing to output
-	if(cntavail == 0x04){
+	if(cntavail == 0x00){
 		PORTC = cntavail | 0x80;
 	}
 	else{
