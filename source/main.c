@@ -1,15 +1,17 @@
 /*	Author: Patrick Dang
  *	Partner(s) Name: 
  *	Lab Section: 028
- *	Assignment: Lab #2  Exercise #2
+ *	Assignment: Lab #2  Exercise #4
  *	Exercise Description: [optional - include for your own benefit]
- *      PortA's pins 3 to 0 indicate a separate parking space
- *      PORTC's pins 3 to 0 is a binary representation of the number of available
- *      spaces given in PORTA
- *      - PC7 also indicates whether or not the parking lot is all full
+ *	PORTS A, B, C are 8-bit weight sensors for 3 seats in a ride (0-255 kg)
+ *	
+ *	PD0 is set to 1 if the total passenger weight is over 140kg
+ *	PD1 is set to 1 if the difference between PORTA and PORTC is over 80kg
+ *	PD7 to PD2 is the approximated weight of the 3 seats
  *
- *      Inputs: PA0 - PA3 (1 = car parked)
- *      Outputs: PA0 - PA3 (binary number of cars parked), PC7 (1 == full lot)
+ *	Inputs: PORTA, PORTB, PORTC (binary value of weight)
+ *	Outputs: PD0 (PORTA + PORTB + PORTC > 140), PD1 (|PORTA - PORTC| > 80),
+ *		 PD7 to PD2 (PORTA + PORTB + PORTC)
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
@@ -22,33 +24,25 @@
 int main(void) {
     /* Insert DDR and PORT initializations */
     DDRA = 0x00; PORTA = 0xFF;
-    DDRC = 0xFF; PORTC = 0x00;
+    DDRB = 0x00; PORTB = 0xFF;
+    DDRC = 0x00; PORTC = 0xFF;
+    DDRD = 0xFF; PORTD = 0x00;
 
-    unsigned char cntavail = 0x00; // The number of parking spaces available
+    unsigned char totalWeight = 0x00;
+    unsigned char overWeight = 0x00;
+    unsigned char unbalanced = 0x00;
     /* Insert your solution below */
     while (1) {
-	// Check Pins
-	if(PINA & 0x01){
-		cntavail++;	
-	}
-	if(PINA & 0x02){
-		cntavail++;
-	}
-	if(PINA & 0x04){
-		cntavail++;
-	}
-	if(PINA & 0x08){
-		cntavail++;
-	}
-	// Checks if lot is full before writing to output
-	if(cntavail == 0x04){
-		PORTC = cntavail | 0x80;
-	}
-	else{
-		PORTC = cntavail;
-	}
-	// Reset cntavail
-	cntavail = 0x00;
+	    totalWeight = PINA + PINB + PINC;
+	    if(totalWeight > 140){
+		overWeight = 0x01;
+	    }
+	    if(PINA - PINC < -80 || PINA - PINC > 80){
+		unbalanced = 0x02;
+	    }
+	    totalWeight = totalWeight & 0xFC;
+	    
+	    PORTD = totalWeight & overWeight & unbalanced;
     }
     return 0;
 }

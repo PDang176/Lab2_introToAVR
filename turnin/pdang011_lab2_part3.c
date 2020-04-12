@@ -1,7 +1,7 @@
 /*	Author: Patrick Dang
  *	Partner(s) Name: 
  *	Lab Section: 028
- *	Assignment: Lab #2  Exercise #2
+ *	Assignment: Lab #2  Exercise #3
  *	Exercise Description: [optional - include for your own benefit]
  *      PortA's pins 3 to 0 indicate a separate parking space
  *      PORTC's pins 3 to 0 is a binary representation of the number of available
